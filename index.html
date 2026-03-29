@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Party Scraper UI</title>
+        <style>
+            :root {
+                --primary: #6366f1;
+                --bg: #0f172a;
+                --text: #f8fafc;
+                --card-bg: #1e293b;
+            }
+            body {
+                font-family:
+                    "Inter",
+                    -apple-system,
+                    sans-serif;
+                background-color: var(--bg);
+                color: var(--text);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                min-height: 100vh;
+                margin: 0;
+                padding: 2rem;
+                box-sizing: border-box;
+            }
+            .container {
+                text-align: center;
+                padding: 2.5rem;
+                background: var(--card-bg);
+                border-radius: 1.5rem;
+                box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.5);
+                width: 100%;
+                max-width: 800px;
+            }
+            h1 {
+                margin-bottom: 1rem;
+                font-size: 2.5rem;
+                background: linear-gradient(to right, #818cf8, #c084fc);
+                background-clip: text;
+                -webkit-background-clip: text;
+            }
+            p {
+                color: #94a3b8;
+                margin-bottom: 2rem;
+            }
+            textarea {
+                width: 100%;
+                height: 300px;
+                background: #0f172a;
+                color: #e2e8f0;
+                border: 1px solid #334155;
+                border-radius: 0.75rem;
+                padding: 1.25rem;
+                margin-bottom: 1.5rem;
+                font-family: "Fira Code", "Cascadia Code", monospace;
+                font-size: 0.9rem;
+                resize: vertical;
+                outline: none;
+                transition: all 0.3s ease;
+                box-sizing: border-box;
+            }
+            textarea:focus {
+                border-color: var(--primary);
+                box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+            }
+            button {
+                background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+                color: white;
+                border: none;
+                padding: 1rem 2rem;
+                border-radius: 0.75rem;
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 1rem;
+                transition:
+                    transform 0.2s,
+                    box-shadow 0.2s;
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            }
+            .copy-btn {
+                background: #334155;
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+                margin-left: auto;
+            }
+            button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+            }
+            button:active {
+                transform: translateY(0);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Party Scraper</h1>
+            <p>Extract event data from Artbar's HTML structure.</p>
+
+            <div style="text-align: left; margin-bottom: 0.5rem; color: #818cf8; font-weight: 600">INSERT ARTBAR UL:</div>
+            <textarea id="htmlInput" placeholder="Paste <ul>...</ul> here..."></textarea>
+
+            <button id="processBtn">Process HTML</button>
+
+            <div style="display: flex; align-items: center; margin-top: 2rem; margin-bottom: 0.5rem">
+                <div style="color: #c084fc; font-weight: 600">RESULT ARRAY:</div>
+                <button id="copyBtn" class="copy-btn">Copy to Clipboard</button>
+            </div>
+            <textarea id="resultOutput" placeholder="The result will appear here..." readonly></textarea>
+        </div>
+        <script src="script.js"></script>
+    </body>
+</html>

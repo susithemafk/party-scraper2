@@ -1,0 +1,13 @@
+crawl4ai
+google-genai
+pydantic
+python-dotenv
+pytest
+pytest-asyncio
+fastapi
+uvicorn
+playwright
+playwright-stealth
+aiofiles
+httpx
+PyYAML
