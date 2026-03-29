@@ -14,4 +14,4 @@ python posting-script.py --city brno --post
 Post single city, one day:
 python posting-script.py --city brno --post --day 2026-03-29
 
-0 7 * * * /home/ubuntu/party-scraper2/venv/bin/python /home/ubuntu/party-scraper2/posting-script.py --city brno --post
+0 7 * * * /home/ubuntu/party-scraper2/venv/bin/python /home/ubuntu/party-scraper2/posting-script.py --city brno --post >> /home/ubuntu/party-scraper2/posting-script.log 2>&1
