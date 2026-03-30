@@ -14,3 +14,6 @@ Send them to server:
 
 scp -i "C:\Users\msuch\.ssh\oracle-cloud.key" src/env/.env.brno ubuntu@130.61.72.167:/home/ubuntu/party-scraper2/src/env/
 scp -r -i "C:\Users\msuch\.ssh\oracle-cloud.key" studio_data_export ubuntu@130.61.72.167:/home/ubuntu/party-scraper2/
+
+
+0 7 * * * /home/ubuntu/party-scraper2/venv/bin/python /home/ubuntu/party-scraper2/posting-script.py --city brno --post >> /home/ubuntu/party-scraper2/posting-script.log 2>&1
