@@ -157,6 +157,8 @@ export const StudioEditor: React.FC<StudioEditorProps> = ({ data, onChange, sele
     const [rowBackgroundDataUrls, setRowBackgroundDataUrls] = useState<Record<string, string>>({})
     const [dayTitleBackgroundByDay, setDayTitleBackgroundByDay] = useState<Record<string, string>>({})
     const [dayTitleBackgroundDataUrls, setDayTitleBackgroundDataUrls] = useState<Record<string, string>>({})
+    const [manualDayInput, setManualDayInput] = useState("")
+    const [manualVenueInput, setManualVenueInput] = useState("")
     const dataRef = useRef(data)
     const previewRefs = useRef<Record<string, HTMLDivElement | null>>({})
     const dayTitlePreviewRefs = useRef<Record<string, HTMLDivElement | null>>({})
@@ -316,6 +318,57 @@ export const StudioEditor: React.FC<StudioEditorProps> = ({ data, onChange, sele
 
         return Object.fromEntries(sortedGroups) as Record<string, StudioRow[]>
     }, [data])
+
+    const getNextDayOrder = useCallback(
+        (day: string) => {
+            const rows = groupedRows[day] ?? []
+            const existingOrders = rows
+                .map((row) => row.event[STUDIO_DAY_ORDER_FIELD])
+                .map((value) => (typeof value === "number" ? value : Number.parseInt(String(value), 10)))
+                .filter((value) => !Number.isNaN(value))
+
+            if (existingOrders.length === 0) {
+                return rows.length + 1
+            }
+
+            return Math.max(...existingOrders) + 1
+        },
+        [groupedRows],
+    )
+
+    const addManualEvent = useCallback(
+        (day: string, preferredVenue?: string) => {
+            const normalizedDay = day.trim()
+            if (!normalizedDay) {
+                setSaveStatus("Please provide a day (YYYY-MM-DD) for manual event creation.")
+                setTimeout(() => setSaveStatus(null), 4000)
+                return
+            }
+
+            const venueKey = (preferredVenue || manualVenueInput).trim() || "manual"
+            const next = { ...dataRef.current }
+            const venueEvents = Array.isArray(next[venueKey]) ? [...next[venueKey]] : []
+
+            venueEvents.push({
+                date: normalizedDay,
+                title: "",
+                time: "",
+                venue: venueKey,
+                price: "",
+                url: "",
+                description: "",
+                [STUDIO_DAY_ORDER_FIELD]: getNextDayOrder(normalizedDay),
+            })
+
+            next[venueKey] = venueEvents
+            commitData(next)
+
+            setManualDayInput(normalizedDay)
+            setSaveStatus(`Manual event added for ${normalizedDay} (${venueKey}).`)
+            setTimeout(() => setSaveStatus(null), 2500)
+        },
+        [commitData, getNextDayOrder, manualVenueInput],
+    )
 
     const updateField = (venue: string, index: number, field: string, rawValue: string, originalValue: unknown) => {
         const next = { ...dataRef.current }
@@ -753,6 +806,36 @@ export const StudioEditor: React.FC<StudioEditorProps> = ({ data, onChange, sele
                 </button>
             </div>
             <p className="subtitle">Edit final event JSON in day-based tables.</p>
+            <div style={{ marginBottom: "0.9rem", border: "1px solid var(--border)", borderRadius: "12px", padding: "0.8rem" }}>
+                <div style={{ fontSize: "0.82rem", marginBottom: "0.35rem", color: "var(--text-muted)" }}>
+                    Manual add event to a specific day
+                </div>
+                <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
+                    <input
+                        type="text"
+                        value={manualDayInput}
+                        onChange={(e) => setManualDayInput(e.target.value)}
+                        placeholder="YYYY-MM-DD"
+                        className="studio-input"
+                        style={{ minWidth: "170px" }}
+                    />
+                    <input
+                        type="text"
+                        value={manualVenueInput}
+                        onChange={(e) => setManualVenueInput(e.target.value)}
+                        placeholder="Venue key (optional, default: manual)"
+                        className="studio-input"
+                        style={{ minWidth: "260px" }}
+                    />
+                    <button
+                        onClick={() => addManualEvent(manualDayInput)}
+                        className="secondary-button"
+                        disabled={isSaving || isLoadingLatest || isGeneratingAll || isGeneratingAllTitles || isExporting}
+                    >
+                        Add Manual Event
+                    </button>
+                </div>
+            </div>
             <div style={{ marginBottom: "0.9rem" }}>
                 <div style={{ fontSize: "0.82rem", marginBottom: "0.35rem", color: "var(--text-muted)" }}>Hide columns (comma-separated field names)</div>
                 <div style={{ display: "flex", gap: "0.5rem", alignItems: "center", flexWrap: "wrap" }}>
@@ -806,7 +889,17 @@ export const StudioEditor: React.FC<StudioEditorProps> = ({ data, onChange, sele
                     <section key={day} className="studio-day-section scraper-section">
                         <div className="studio-day-header">
                             <h2 className="section-title">{day}</h2>
-                            <span className="venue-count-badge">{rows.length} events</span>
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                                <span className="venue-count-badge">{rows.length} events</span>
+                                <button
+                                    className="secondary-button"
+                                    style={{ padding: "0.35rem 0.65rem", fontSize: "0.75rem" }}
+                                    disabled={isSaving || isLoadingLatest || isGeneratingAll || isGeneratingAllTitles || isExporting}
+                                    onClick={() => addManualEvent(day, rows[0]?.venue)}
+                                >
+                                    + Add Event
+                                </button>
+                            </div>
                         </div>
 
                         <div className="studio-table-wrapper">

@@ -346,9 +346,9 @@ async def scrape_batch_stream(request: dict):
                             # Wrap in venue key for grouped format
                             yield json.dumps({venue: [res]}) + "\n"
                         else:
-                            yield json.dumps({venue: [{"url": url, "error": "Extraction failed"}]}) + "\n"
+                            yield json.dumps({venue: [{"url": url, "date": date, "error": "Extraction failed"}]}) + "\n"
                     except Exception as e:
-                        yield json.dumps({venue: [{"url": url, "error": str(e)}]}) + "\n"
+                        yield json.dumps({venue: [{"url": url, "date": date, "error": str(e)}]}) + "\n"
 
     return StreamingResponse(event_generator(), media_type="application/x-ndjson")
 

@@ -6,10 +6,11 @@ npm run dev
 
 Create posts, export them.
 
-Report single city, all dates:
 python posting-script.py --city brno
-
-Post single city, all dates:
 python posting-script.py --city brno --post
-Post single city, one day:
 python posting-script.py --city brno --post --day 2026-03-29
+
+Send them to server:
+
+scp -i "C:\Users\msuch\.ssh\oracle-cloud.key" src/env/.env.brno ubuntu@130.61.72.167:/home/ubuntu/party-scraper2/src/env/
+scp -r -i "C:\Users\msuch\.ssh\oracle-cloud.key" studio_data_export ubuntu@130.61.72.167:/home/ubuntu/party-scraper2/
